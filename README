@@ -1,0 +1,9 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3330
+
+A Unite.vim plugin to find/open files easily, using locate command.
+See details in the following pages.
+
+* http://github.com/ujihisa/unite-locate (development)
+
+Dependency: locate command
+
