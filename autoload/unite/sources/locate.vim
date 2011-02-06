@@ -15,7 +15,6 @@ function! s:is_linux()
   call unite#util#system('locate -V')
   return !unite#util#get_last_status()
 endfunction
-let s:additional_options = s:is_linux() ? '-e' : ''
 
 function! s:unite_source.gather_candidates(args, context)
   return map(
@@ -36,7 +35,12 @@ function! s:unite_source.gather_candidates(args, context)
 endfunction
 
 function! unite#sources#locate#define()
-  return executable('locate') ? s:unite_source : []
+  if executable('locate')
+    let s:additional_options = s:is_linux() ? '-e' : ''
+    return s:unite_source
+  else
+    return []
+  endif
 endfunction
 
 
