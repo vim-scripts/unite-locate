@@ -16,13 +16,18 @@ function! s:is_linux()
   return !unite#util#get_last_status()
 endfunction
 
+if executable('locate')
+  let s:locate_command = 'locate -l %d'.(s:is_linux() ? ' -e' : '').' %s'
+elseif (has('win32') || has('win64')) && executable('es')
+  let s:locate_command = 'es -i -r -n %d %s'
+endif
+
 function! s:unite_source.gather_candidates(args, context)
   return map(
         \ split(
         \   unite#util#system(printf(
-        \     'locate -l %d %s %s',
+        \     s:locate_command,
         \     s:unite_source.max_candidates,
-        \     s:additional_options,
         \     a:context.input)),
         \   "\n"),
         \ '{
@@ -35,12 +40,7 @@ function! s:unite_source.gather_candidates(args, context)
 endfunction
 
 function! unite#sources#locate#define()
-  if executable('locate')
-    let s:additional_options = s:is_linux() ? '-e' : ''
-    return s:unite_source
-  else
-    return []
-  endif
+  return exists('s:locate_command') ? s:unite_source : []
 endfunction
 
 
